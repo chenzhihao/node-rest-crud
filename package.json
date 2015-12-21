@@ -16,8 +16,6 @@
     "morgan": "~1.6.1",
     "pg": "^4.4.3",
     "pg-hstore": "^2.3.2",
-    "pg-promise": "^2.8.4",
-    "sequelize": "^3.15.0",
     "serve-favicon": "~2.3.0"
   }
 }
