@@ -1,4 +1,4 @@
-const Todo = require('../models/todoModel');
+const Todo = require('../../models/todoModel');
 
 module.exports = {
   getTodos(req, res) {
