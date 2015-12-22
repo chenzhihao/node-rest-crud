@@ -1,8 +1,10 @@
 # node-rest-crud
 
-The "node-rest-crud" is a seed repo for quickly building up a node backend which provide restful service.
+The "node-rest-crud" is a seed repo for quickly building up a node backend which provide RESTFul service.
 
-It's build on **Express4** + **Bookshelf** + **Postgres**.
+The RESTFul api is protected by JWT(JSON Web Tokens).
+
+It's build on **Express4** + **Bookshelf** + **Postgres** + **JWT**.
 
 ##Usages
 
@@ -35,10 +37,55 @@ It's build on **Express4** + **Bookshelf** + **Postgres**.
     ``` bash
     $ npm i
     $ npm run start
+    ``` 
+   
+   As the RESTFul apis are protected and need authentication. We need to get token first:
+   
+   ``` bash
+   $ curl -X POST -H "Content-Type: application/json"  -d '{"userName": "zhihao", "password": "12345"}' 'http://localhost:8888/token'
+   ```
+  The user and password is hard coded here. In real world we need to implement user validation in *token/index.js* by your self:
+  
+  ``` javascript
+  // mocked validation
+	function validateUser(userName, password) {
+	  return new Promise((resolve, reject)=> {
+	    if (userName === 'zhihao' && password === '12345') {
+	      resolve({id: USER_ID});
+	    } else {
+	      reject({error: 'Auth failed'});
+	    }
+	  });
+	}
+  
+  ```
+  
+  If the validation success, we will get the the JWT token:
+  
+  ``` javascript
+  {
+	  	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjEsImV4cCI6MTQ1MTM3MDcwNDY5MywiaWF0IjoxNDUwNzY1OTA0fQ.onVTMQnNxJgJKblIO6uIY444ZwkCF7gdz6HKW6syO5g",
+  		"expires": 1451370704693,
+ 		"userId": 1
+}
+  
+  ```
+  
+  With the token now we can access rest resources:
 
+    ``` bash
     // test to fetch all todos:
-    $ curl -X GET -H "Cache-Control: no-cache" 'http://localhost:8888/rest/todos'
-
-	// test to create one todo:
-	$ curl -X POST -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'text=new+todo' 'http://localhost:8888/rest/todos'
-    ```
+    $ curl -X GET -H "x-access-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjEsImV4cCI6MTQ1MTM3MDcwNDY5MywiaWF0IjoxNDUwNzY1OTA0fQ.onVTMQnNxJgJKblIO6uIY444ZwkCF7gdz6HKW6syO5g" 'http://localhost:8888/rest/todos'
+	```
+	
+	Without token error:
+	
+	``` bash
+	// without token
+	$ curl -X GET 'http://localhost:8888/rest/todos'
+	// get：{"status":"error","error":"No token"}
+	
+	// invalid token
+	$ curl -X GET -H "x-access-token: INVALID_TOKEN" 'http://localhost:8888/rest/todos'
+	// get: {"status":"error","error":"token invalid"}
+	```
