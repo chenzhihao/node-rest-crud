@@ -12,6 +12,7 @@ It's build on **Express4** + **Bookshelf** + **Postgres** + **JWT**.
 
 	``` bash
 	$ createdb mydb
+	$ createuser dbuser
 	$ psql mydb dbuser -f init_db.sql
 
 	```
