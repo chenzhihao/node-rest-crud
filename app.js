@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/token', tokenRoutes);
 
 //
-app.use('/rest',jswtAuthDecoder);
+//app.use('/rest',jswtAuthDecoder);
 app.use('/rest', apiRoutes);
 
 //

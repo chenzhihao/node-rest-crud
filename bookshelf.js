@@ -6,7 +6,8 @@ const knex = require('knex')({
         password : '12345',
         database : 'mydb',
         charset  : 'utf8'
-    }
+    },
+    debug: true
 });
 
 module.exports = require('bookshelf')(knex);
