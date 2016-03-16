@@ -9,6 +9,7 @@ const jswtAuthDecoder = require('./libs/jwtAuthDecoder');
 
 const apiRoutes = require('./routes/api');
 const tokenRoutes = require('./routes/token');
+const fetchRoutes =  require('./routes/fetch');
 
 const port = process.env.PORT || 8888;
 
@@ -40,6 +41,10 @@ app.use('/token', tokenRoutes);
 //
 app.use('/rest',jswtAuthDecoder);
 app.use('/rest', apiRoutes);
+
+//
+//app.use('/fetch', jswtAuthDecoder);
+app.use('/fetch', fetchRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
