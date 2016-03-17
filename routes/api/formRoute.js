@@ -4,7 +4,7 @@ module.exports = {
     getForms(req, res) {
         const title = req.query.title;
         if (title) {
-            return Form.query({where: {'title': title}}).fetchAll().then((forms)=> {
+            return Form.forge(title).fetch({withRelated: ['labels']}).then((forms)=> {
                 res.json({
                     status: 'ok',
                     data: forms.toJSON()

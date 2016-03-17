@@ -1,60 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const request = require('request');
-const screenStepsConfig = require('../../config.js').screenSteps;
-const parser = require('xml2json');
-const handleManuals = require('../../libs/handleManuals');
 
-router.get('/', function (req, res) {
-  fetchSite().then(site=> {
-    res.send(site);
-  });
-});
+const handleFetch = require('../../libs/handleFetch');
 
-router.get('/manuals/:id', function (req, res) {
-  fetchManual(req.params.id).then(manuals=> {
-    res.send(manuals);
-  });
-});
+//router.get('/', function (req, res) {
+//    fetchSite().then(site=> {
+//        res.send(site);
+//    });
+//});
+//
+//router.get('/m/:id', function (req, res) {
+//    fetchManual(req.params.id).then(manuals=> {
+//        res.send(manuals);
+//    });
+//});
+//
+//router.get('/m/:manualId/l/:lessonId', function (req, res) {
+//    fetchLesson(req.params.manualId, req.params.lessonId).then(lesson=> {
+//        res.send(lesson);
+//    });
+//});
 
-function fetchSite(siteId) {
-  siteId = siteId ||  screenStepsConfig.siteId;
-  return new Promise((resolve, reject)=>{
-    request({
-      url: `${screenStepsConfig.url}/s/${siteId}`,
-      headers: {
-        'Authorization': screenStepsConfig.authorization,
-        'Content-Type': 'application/xml',
-        'Accept': 'application/xml'
-      }
-    }, (error, response, body)=> {
-      if (error) {
-        reject(error);
-      }
-      var resJSON = JSON.parse(parser.toJson(body));
-      resolve(resJSON);
+router.get('/update', function (req, res) {
+    handleFetch.handleSite((manual)=> {
+        handleFetch.handleManual(manual.id, (lesson)=> {
+            handleFetch.handleLesson(manual.id, lesson.id);
+        })
     });
-  });
-}
-
-function fetchManual(manualId) {
-  return new Promise((resolve, reject)=>{
-    request({
-      url: `${screenStepsConfig.url}/s/${screenStepsConfig.siteId}/m/${manualId}`,
-      headers: {
-        'Authorization': screenStepsConfig.authorization,
-        'Content-Type': 'application/xml',
-        'Accept': 'application/xml'
-      }
-    }, (error, response, body)=> {
-      if (error) {
-        reject(error);
-      }
-      var resJSON = JSON.parse(parser.toJson(body));
-      resolve(resJSON);
-    });
-  });
-}
-
+    //res.send('Updating!');
+});
 
 module.exports = router;

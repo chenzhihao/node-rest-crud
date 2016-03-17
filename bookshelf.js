@@ -7,7 +7,10 @@ const knex = require('knex')({
         database : 'mydb',
         charset  : 'utf8'
     },
-    debug: true
+    //debug: true
 });
 
-module.exports = require('bookshelf')(knex);
+var Orm = require('bookshelf')(knex);
+Orm.plugin('bookshelf-camelcase');
+
+module.exports = Orm;
